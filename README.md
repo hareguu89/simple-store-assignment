@@ -55,7 +55,7 @@ atom의 값이 변경되면 해당 atom을 사용하는 컴포넌트만 리렌�
 useEffect 또는 useSyncExternalStore로 구독/해제를 관리
 
 ---
-##✨ 선택 요구사항
+## ✨ 선택 요구사항
 
 필수 요구사항을 충족한 후에 추가적으로 구현할 수 있는 고급 기능들입니다.
 
@@ -77,6 +77,7 @@ set(atomA, 1); set(atomB, 2); 일괄 처리하여 useAtom이 한 번만 리렌�
 Frameworkless 사용
 React 외 환경에서도 get, set, subscribe만으로 상태 관리 가능
 
+---
 
 # 원자 상태 관리 라이브러리 (Atom State Management Library)
 
