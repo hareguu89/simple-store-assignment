@@ -1,3 +1,83 @@
+# 요구사항
+
+🛠 과제 설명
+다음 요구사항을 고려하여 상태 관리 라이브러리를 직접 구현하세요.
+
+## ✅ 필수 요구사항
+1. Atom 생성 및 관리
+Atom은 상태의 최소 단위로, 특정 값(initialValue)을 담고 있으며 이 값을 읽거나 쓸 수 있어야 합니다.
+
+API
+
+createAtom(initialValue: T): Atom<T>
+→ 초기값을 기반으로 새로운 atom 생성
+
+get(atom: Atom<T>): T
+→ atom의 현재 상태 값 반환
+
+set(atom: Atom<T>, newValue: T): void
+→ atom의 값을 newValue로 갱신. 값이 변한 경우에만 구독자에게 알림
+
+2. 프로바이더 시스템
+구독자 관리 및 React 렌더 트리거 추상화 계층. 전역 Store나 Context 없이도 atom 단위로 구독자를 관리함.
+
+역할
+
+각 atom은 자체적으로 구독자 목록(Set)을 관리 (Redux의 Provider처럼 전역이 아닌, atom-local 스코프)
+
+useAtom에서 렌더 트리거를 구독자로 등록하면 컴포넌트 리렌더링 가능
+
+unsubscribe 시 내부 메모리도 정리 (GC-friendly)
+
+3. 구독 (subscribe) 시스템
+구독 API
+
+subscribe(atom: Atom<T>, callback: (val: T) => void): () => void
+→ callback을 구독자로 등록. 값이 바뀌면 실행됨.
+→ 반환되는 함수는 unsubscribe 역할 수행
+
+구독 조건
+
+set 호출 시 값이 이전 상태와 다를 경우에만 구독자에게 알림
+
+동일 값으로 set하면 callback 호출 없이 무시됨
+
+4. React 연동
+React Hook API
+
+useAtom(atom: Atom<T>): [T, (val: T) => void]
+→ 상태값을 읽고, setter를 통해 값을 변경할 수 있음
+
+## 렌더링 조건
+
+atom의 값이 변경되면 해당 atom을 사용하는 컴포넌트만 리렌더링됨
+
+useEffect 또는 useSyncExternalStore로 구독/해제를 관리
+
+---
+##✨ 선택 요구사항
+
+필수 요구사항을 충족한 후에 추가적으로 구현할 수 있는 고급 기능들입니다.
+
+기능
+
+설명: 파생 Atom
+createDerivedAtom(get => get(atomA) + get(atomB)) 형식으로 계산된 상태 생성
+
+비동기 Atom
+createAsyncAtom(Promise) 기반으로 비동기 로직 처리. Suspense 대응 가능
+
+
+배치 업데이트
+set(atomA, 1); set(atomB, 2); 일괄 처리하여 useAtom이 한 번만 리렌더
+
+메모리 관리
+마지막 구독자가 unsubscribe하면 atom의 내부 리스너 Set도 GC 대상에 포함
+
+Frameworkless 사용
+React 외 환경에서도 get, set, subscribe만으로 상태 관리 가능
+
+
 # 원자 상태 관리 라이브러리 (Atom State Management Library)
 
 React를 위한 간단하고 효율적인 원자 상태 관리 라이브러리입니다.  
@@ -144,4 +224,5 @@ export const useAtom = <T>(atom: Atom<T>) => {
 - `useSyncExternalStore`로 해결 → Concurrent Rendering 대응 및 tearing 방지  
 
 ---
-# simple-store-assignment
+
+
